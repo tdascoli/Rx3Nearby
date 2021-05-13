@@ -1,0 +1,2 @@
+include ':rx3nearby', ':rx3nearby-sample'
+rootProject.name='Rx3Nearby'

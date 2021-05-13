@@ -1,0 +1,56 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'com.android.library'
+apply plugin: 'digital.wup.android-maven-publish'
+
+// Sources
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    publications {
+        mavenAar(MavenPublication) {
+            groupId = 'com.github.tdascoli'
+            artifactId = 'Rx3Nearby'
+            version = "$project.version"
+            // Publish AAR
+            from components.android
+            // Publish sources
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode createVersionCode()
+        versionName "$project.version"
+    }
+}
+
+dependencies {
+    // nearby
+    api 'com.google.android.gms:play-services-nearby:17.0.0'
+
+    // rx
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.4'
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+
+}
+
+def createVersionCode(){
+    def df = new SimpleDateFormat("yyMMddHHmm")
+    df.setTimeZone(TimeZone.getTimeZone("de_CH"))
+    def versionCode = df.format(new Date()).toInteger()
+    println "#### createVersionCode: " + versionCode + " ####"
+
+    return versionCode
+}
